@@ -2,7 +2,7 @@ locals {
   workspace_map = merge([
     for app_key, app_id in var.app_ids : {
       for env_key, env_name in var.environments :
-      "${env_key}-AppID-${app_id}" => {
+      "${env_key}-${var.project_name_prefix}-${app_id}" => {
         app_key  = app_key
         app_id   = app_id
         env_key  = env_key
@@ -15,7 +15,7 @@ locals {
 resource "tfe_project" "projects" {
   for_each     = var.app_ids
   organization = var.organization
-  name         = "AppID-${each.value}"
+  name         = "${var.project_name_prefix}-${each.value}"
   description  = "${var.description}-${each.value}"
 
   tags = {
@@ -42,9 +42,21 @@ resource "tfe_team" "app_teams" {
   organization = var.organization
 
   organization_access {
-    manage_projects    = false
-    manage_workspaces  = false
-    manage_agent_pools = false
+    read_workspaces            = var.team_organization_access.read_workspaces
+    read_projects              = var.team_organization_access.read_projects
+    manage_policies            = var.team_organization_access.manage_policies
+    manage_policy_overrides    = var.team_organization_access.manage_policy_overrides
+    manage_workspaces          = var.team_organization_access.manage_workspaces
+    manage_vcs_settings        = var.team_organization_access.manage_vcs_settings
+    manage_providers           = var.team_organization_access.manage_providers
+    manage_modules             = var.team_organization_access.manage_modules
+    manage_run_tasks           = var.team_organization_access.manage_run_tasks
+    manage_projects            = var.team_organization_access.manage_projects
+    manage_membership          = var.team_organization_access.manage_membership
+    manage_teams               = var.team_organization_access.manage_teams
+    manage_organization_access = var.team_organization_access.manage_organization_access
+    access_secret_teams        = var.team_organization_access.access_secret_teams
+    manage_agent_pools         = var.team_organization_access.manage_agent_pools
   }
 }
 

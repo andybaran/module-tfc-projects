@@ -3,8 +3,8 @@
 Creates Terraform Cloud/Enterprise projects, per-environment workspaces, teams, and team-project access for a set of application IDs.
 
 For each app ID the module creates:
-- A **project** named `AppID-<id>`
-- A **workspace** per environment (default: dev, test, prod) named `<env>-AppID-<id>`
+- A **project** named `{prefix}-{id}` (default prefix: `AppID`)
+- A **workspace** per environment (default: dev, test, prod) named `{env}-{prefix}-{id}`
 - A **team** named after the project
 - A **team-project access** grant at a configurable level (default: `maintain`)
 
@@ -31,8 +31,10 @@ For each app ID the module creates:
 | `organization` | `string` | TFE organization in which to create resources | n/a | yes |
 | `app_ids` | `map(string)` | Map of keys to app ID strings | n/a | yes |
 | `description` | `string` | Base description applied to each project | `"Managed by Terraform module tfe-projects"` | no |
+| `project_name_prefix` | `string` | Prefix used in project and workspace names | `"AppID"` | no |
 | `environments` | `map(string)` | Map of short env keys to display names | `{ dev = "development", test = "test", prod = "production" }` | no |
 | `team_project_access_level` | `string` | Access level for app teams (`admin`, `maintain`, `write`, `read`) | `"maintain"` | no |
+| `team_organization_access` | `object` | [Organization-level access](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team#organization_access) settings for each app team | `{}` (all `false`) | no |
 | `queue_all_runs` | `bool` | Whether workspaces should queue all runs | `false` | no |
 
 ## Outputs
@@ -70,5 +72,5 @@ See the [`examples/basic`](./examples/basic) directory for a complete example.
 ## Notes
 
 - Provider configuration (`tfe`) must be supplied by the calling root module.
-- `app_ids` values and `environments` keys must only contain alphanumeric characters, hyphens, or underscores (validated at plan time).
+- `app_ids` values, `environments` keys, and `project_name_prefix` must only contain alphanumeric characters, hyphens, or underscores (validated at plan time).
 - Input/output tables can be regenerated with [`terraform-docs`](https://terraform-docs.io/).
