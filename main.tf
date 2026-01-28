@@ -25,7 +25,7 @@ resource "tfe_project" "projects" {
 
 resource "tfe_workspace" "workspaces" {
   for_each       = local.workspace_map
-  name           = "${each.value.env_key}-AppID-${each.value.app_id}"
+  name           = each.key
   organization   = var.organization
   queue_all_runs = var.queue_all_runs
   project_id     = tfe_project.projects[each.value.app_key].id

@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    tfe = {
+      source  = "hashicorp/tfe"
+      version = ">= 0.71"
+    }
+  }
+}
+
 module "projects" {
   source       = "../../"
   organization = "my-org"
@@ -7,6 +18,10 @@ module "projects" {
     "2" = "2bd"
     "3" = "3ce"
   }
+
+  # Override defaults to demonstrate flexibility.
+  queue_all_runs            = true
+  team_project_access_level = "write"
 }
 
 output "project_names" {

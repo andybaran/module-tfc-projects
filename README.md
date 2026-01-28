@@ -8,6 +8,15 @@ For each app ID the module creates:
 - A **team** named after the project
 - A **team-project access** grant at a configurable level (default: `maintain`)
 
+## Resources Created
+
+| Resource | Description |
+|----------|-------------|
+| `tfe_project` | One project per app ID |
+| `tfe_workspace` | One workspace per app ID per environment |
+| `tfe_team` | One team per project |
+| `tfe_team_project_access` | Grants the team access to its project |
+
 ## Requirements
 
 | Name      | Version |
@@ -40,7 +49,9 @@ For each app ID the module creates:
 
 ```hcl
 module "projects" {
-  source       = "./modules/tfe-projects"
+  source  = "app.terraform.io/my-org/projects/tfe"
+  version = "~> 1.0"
+
   organization = "my-org"
 
   app_ids = {
@@ -59,4 +70,5 @@ See the [`examples/basic`](./examples/basic) directory for a complete example.
 ## Notes
 
 - Provider configuration (`tfe`) must be supplied by the calling root module.
+- `app_ids` values and `environments` keys must only contain alphanumeric characters, hyphens, or underscores (validated at plan time).
 - Input/output tables can be regenerated with [`terraform-docs`](https://terraform-docs.io/).
