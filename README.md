@@ -33,7 +33,7 @@ For each app ID the module creates:
 | `description` | `string` | Base description applied to each project | `"Managed by Terraform module tfe-projects"` | no |
 | `project_name_prefix` | `string` | Prefix used in project and workspace names | `"AppID"` | no |
 | `environments` | `map(string)` | Map of short env keys to display names | `{ dev = "development", test = "test", prod = "production" }` | no |
-| `team_project_access_level` | `string` | Access level for app teams (`admin`, `maintain`, `write`, `read`) | `"maintain"` | no |
+| `team_project_access_level` | `string` | [Access level](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team_project_access#access) for app teams (`admin`, `maintain`, `write`, `read`) | `"maintain"` | no |
 | `team_organization_access` | `object` | [Organization-level access](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team#organization_access) settings for each app team | `{}` (all `false`) | no |
 | `queue_all_runs` | `bool` | Whether workspaces should queue all runs | `false` | no |
 
