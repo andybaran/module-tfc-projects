@@ -7,6 +7,7 @@ For each app ID the module creates:
 - A **workspace** per environment (default: dev, test, prod) named `{env}-{prefix}-{id}`
 - A **team** named after the project
 - A **team-project access** grant at a configurable level (default: `maintain`)
+- Optionally, **cross-project read access** grants so every app team can read all projects managed by the module
 
 ## Resources Created
 
@@ -16,6 +17,7 @@ For each app ID the module creates:
 | `tfe_workspace` | One workspace per app ID per environment |
 | `tfe_team` | One team per project |
 | `tfe_team_project_access` | Grants the team access to its project |
+| `tfe_team_project_access` (cross-project) | Grants every team read access to all other projects (when `enable_global_read_access = true`) |
 
 ## Requirements
 
@@ -35,6 +37,7 @@ For each app ID the module creates:
 | `environments` | `map(string)` | Map of short env keys to display names | `{ dev = "development", test = "test", prod = "production" }` | no |
 | `team_project_access_level` | `string` | [Access level](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team_project_access#access) for app teams (`admin`, `maintain`, `write`, `read`) | `"maintain"` | no |
 | `team_organization_access` | `object` | [Organization-level access](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team#organization_access) settings for each app team | `{}` (all `false`) | no |
+| `enable_global_read_access` | `bool` | Grant every app team read access to all projects managed by this module | `false` | no |
 | `queue_all_runs` | `bool` | Whether workspaces should queue all runs | `false` | no |
 
 ## Outputs

@@ -10,6 +10,18 @@ locals {
       }
     }
   ]...)
+
+  cross_project_access = var.enable_global_read_access ? {
+    for pair in flatten([
+      for team_key, team in tfe_team.app_teams : [
+        for proj_key, proj in tfe_project.projects : {
+          key        = "${team_key}-${proj_key}"
+          team_id    = team.id
+          project_id = proj.id
+        } if team_key != proj_key
+      ]
+    ]) : pair.key => pair
+  } : {}
 }
 
 resource "tfe_project" "projects" {
@@ -65,4 +77,11 @@ resource "tfe_team_project_access" "app_team_project_access" {
   team_id    = tfe_team.app_teams[each.key].id
   project_id = each.value.id
   access     = var.team_project_access_level
+}
+
+resource "tfe_team_project_access" "cross_project_read_access" {
+  for_each   = local.cross_project_access
+  team_id    = each.value.team_id
+  project_id = each.value.project_id
+  access     = "read"
 }

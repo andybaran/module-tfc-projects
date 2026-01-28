@@ -11,7 +11,7 @@ terraform {
 
 module "projects" {
   source       = "../../"
-  organization = "my-org"
+  organization = "andybaran"
 
   app_ids = {
     "1" = "1ac"
@@ -22,6 +22,7 @@ module "projects" {
   # Override defaults to demonstrate flexibility.
   queue_all_runs            = true
   team_project_access_level = "write"
+  enable_global_read_access = true
 }
 
 output "project_names" {

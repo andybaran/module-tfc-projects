@@ -77,6 +77,13 @@ variable "team_project_access_level" {
   }
 }
 
+variable "enable_global_read_access" {
+  description = "Grant every app team read access to all projects managed by this module."
+  type        = bool
+  nullable    = false
+  default     = false
+}
+
 # See organization_access attributes:
 # https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team#organization_access
 variable "team_organization_access" {
