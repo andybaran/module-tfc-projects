@@ -1,46 +1,52 @@
 # tfe-projects Terraform Module
 
-Creates a user-specified number of Terraform Cloud/Enterprise (TFE) projects with a common prefix and a 3-character random suffix for uniqueness.
+Creates Terraform Cloud/Enterprise projects, per-environment workspaces, teams, and team-project access for a set of application IDs.
 
-## Features
-- Bulk create N projects (`project_count`)
-- Ensures unique names using `prefix-xyz` pattern (xyz = 3 random chars)
-- Adds index in description for traceability
-- Validates sensible bounds (count <= 50, prefix length <= 40)
+For each app ID the module creates:
+- A **project** named `AppID-<id>`
+- A **workspace** per environment (default: dev, test, prod) named `<env>-AppID-<id>`
+- A **team** named after the project
+- A **team-project access** grant at a configurable level (default: `maintain`)
 
 ## Requirements
+
 | Name      | Version |
 |-----------|---------|
 | terraform | >= 1.0  |
 | tfe       | >= 0.71 |
-| random    | >= 3.5  |
 
 ## Inputs
+
 | Name | Type | Description | Default | Required |
 |------|------|-------------|---------|----------|
-| organization | string | TFE organization in which to create projects | n/a | yes |
-| prefix | string | Common prefix for all project names (suffix of 3 random chars appended) | n/a | yes |
-| project_count | number | Number of projects to create (1..50) | 1 | no |
-| description | string | Base description added to each project (index appended) | "Managed by Terraform module tfe-projects" | no |
+| `organization` | `string` | TFE organization in which to create resources | n/a | yes |
+| `app_ids` | `map(string)` | Map of keys to app ID strings | n/a | yes |
+| `description` | `string` | Base description applied to each project | `"Managed by Terraform module tfe-projects"` | no |
+| `environments` | `map(string)` | Map of short env keys to display names | `{ dev = "development", test = "test", prod = "production" }` | no |
+| `team_project_access_level` | `string` | Access level for app teams (`admin`, `maintain`, `write`, `read`) | `"maintain"` | no |
+| `queue_all_runs` | `bool` | Whether workspaces should queue all runs | `false` | no |
 
 ## Outputs
+
 | Name | Description |
 |------|-------------|
-| project_names | List of created project names |
-| project_ids   | Map of project name => project ID |
-
-## Name Format
-Each project name will be: `"<prefix>-<rnd>"` where `<rnd>` is 3 random alphanumeric lowercase characters (may include digits).
-Example: `platform-4f2`, `platform-a1c`.
+| `project_ids` | Map of app key to project ID |
+| `project_names` | List of created project names |
+| `workspace_ids` | Map of workspace key to workspace ID |
+| `workspace_names` | List of created workspace names |
+| `team_ids` | Map of project name to team ID |
 
 ## Usage
+
 ```hcl
 module "projects" {
-  source         = "./modules/tfe-projects"
-  organization   = var.organization
-  prefix         = "platform"
-  project_count  = 5
-  description    = "Platform team project set"
+  source       = "./modules/tfe-projects"
+  organization = "my-org"
+
+  app_ids = {
+    "1" = "1ac"
+    "2" = "2bd"
+  }
 }
 
 output "project_names" {
@@ -48,25 +54,9 @@ output "project_names" {
 }
 ```
 
-## Example Generated Names
-If `prefix = "demo"` and `project_count = 3`:
-```
-demo-8b4
-demo-1af
-demo-92e
-```
+See the [`examples/basic`](./examples/basic) directory for a complete example.
 
 ## Notes
-- Random suffix characters are stable after creation; they only change if resource is tainted/destroyed.
-- To force regeneration of names, run: `terraform taint random_string.suffix[<index>]` then `apply`.
-- Provider configuration (`tfe`) must be in the root module; this submodule does not configure the provider.
 
-## Limitations
-- Does not manage team/project associations or access settings.
-- `project_count` capped at 50 to avoid accidental large-scale creation.
-
-## Destroying
-Removing the module block or setting `project_count = 0` (after manual adjustment) and applying will destroy managed projects.
-
-## Contributing
-Feel free to extend with project access controls or tagging in future iterations.
+- Provider configuration (`tfe`) must be supplied by the calling root module.
+- Input/output tables can be regenerated with [`terraform-docs`](https://terraform-docs.io/).
