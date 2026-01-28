@@ -11,7 +11,7 @@ terraform {
 
 module "projects" {
   source       = "../../"
-  organization = "andybaran"
+  organization = "my-org"
 
   app_ids = {
     "1" = "1ac"
