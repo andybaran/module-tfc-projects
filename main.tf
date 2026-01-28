@@ -85,3 +85,27 @@ resource "tfe_team_project_access" "cross_project_read_access" {
   project_id = each.value.project_id
   access     = "read"
 }
+
+resource "tfe_team" "org_admins" {
+  count        = var.org_admins_team_name != null ? 1 : 0
+  name         = var.org_admins_team_name
+  organization = var.organization
+
+  organization_access {
+    read_workspaces            = true
+    read_projects              = true
+    manage_policies            = true
+    manage_policy_overrides    = true
+    manage_workspaces          = true
+    manage_vcs_settings        = true
+    manage_providers           = true
+    manage_modules             = true
+    manage_run_tasks           = true
+    manage_projects            = true
+    manage_membership          = true
+    manage_teams               = true
+    manage_organization_access = true
+    access_secret_teams        = true
+    manage_agent_pools         = true
+  }
+}

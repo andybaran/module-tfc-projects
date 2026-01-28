@@ -16,6 +16,7 @@ For each app ID the module creates:
 | `tfe_project` | One project per app ID |
 | `tfe_workspace` | One workspace per app ID per environment |
 | `tfe_team` | One team per project |
+| `tfe_team` (org admins) | Organization admins team with full organization access (when `org_admins_team_name` is set) |
 | `tfe_team_project_access` | Grants the team access to its project |
 | `tfe_team_project_access` (cross-project) | Grants every team read access to all other projects (when `enable_global_read_access = true`) |
 
@@ -39,6 +40,7 @@ For each app ID the module creates:
 | `team_organization_access` | `object` | [Organization-level access](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/team#organization_access) settings for each app team | `{}` (all `false`) | no |
 | `enable_global_read_access` | `bool` | Grant every app team read access to all projects managed by this module | `false` | no |
 | `queue_all_runs` | `bool` | Whether workspaces should queue all runs | `false` | no |
+| `org_admins_team_name` | `string` | Name of the TFC Organization Admins team. If set, creates a team with full organization access | `null` | no |
 
 ## Outputs
 
@@ -49,6 +51,7 @@ For each app ID the module creates:
 | `workspace_ids` | Map of workspace key to workspace ID |
 | `workspace_names` | List of created workspace names |
 | `team_ids` | Map of project name to team ID |
+| `org_admins_team_id` | ID of the organization admins team (if created) |
 
 ## Usage
 

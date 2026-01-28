@@ -18,11 +18,14 @@ module "projects" {
     "2" = "2bd"
     "3" = "3ce"
   }
-
+  
   # Override defaults to demonstrate flexibility.
   queue_all_runs            = true
   team_project_access_level = "write"
   enable_global_read_access = true
+
+  # Create an organization admins team with full access
+  org_admins_team_name = "org-admins"
 }
 
 output "project_names" {
@@ -35,4 +38,8 @@ output "workspace_names" {
 
 output "team_ids" {
   value = module.projects.team_ids
+}
+
+output "org_admins_team_id" {
+  value = module.projects.org_admins_team_id
 }

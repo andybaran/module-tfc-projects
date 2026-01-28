@@ -115,3 +115,9 @@ variable "queue_all_runs" {
   nullable    = false
   default     = false
 }
+
+variable "org_admins_team_name" {
+  description = "Name of the TFC Organization Admins team. If not null, a team with full organization access will be created."
+  type        = string
+  default     = null
+}

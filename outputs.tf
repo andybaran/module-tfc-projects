@@ -22,3 +22,8 @@ output "team_ids" {
   description = "Map of project name to team ID."
   value       = { for k, t in tfe_team.app_teams : tfe_project.projects[k].name => t.id }
 }
+
+output "org_admins_team_id" {
+  description = "ID of the organization admins team (if created)."
+  value       = length(tfe_team.org_admins) > 0 ? tfe_team.org_admins[0].id : null
+}
